@@ -18,14 +18,18 @@ class Stats(object):
         self.num_trajs_generated = 0
         self.num_trajs_validated = 0
         self.num_collison_checks = 0
-        # self.best_traj_costs = [] # float("inf")
+        self.planning_times = []
+        self.planning_time_avg = 0.0
+        self.planning_time_std = 0.0
+        self.best_traj_costs = []
+        self.final_traj_cost = 0.0
         
     def __add__(self, other):
         self.num_iter += other.num_iter
         self.num_trajs_generated += other.num_trajs_generated
         self.num_trajs_validated += other.num_trajs_validated
         self.num_collison_checks += other.num_collison_checks
-        # self.best_traj_costs.extend(other.best_traj_costs)
+        self.best_traj_costs.extend(other.best_traj_costs)
         return self
     
     def average(self, value: int):
@@ -33,6 +37,12 @@ class Stats(object):
         self.num_trajs_generated /= value
         self.num_trajs_validated /= value
         self.num_collison_checks /= value
+        self.planning_time_avg = np.mean(self.planning_times)
+        self.final_traj_cost = np.mean(self.best_traj_costs)
+        return self
+    
+    def std_dev(self):
+        self.planning_time_std = np.std(self.planning_times)
         return self
     
 class FrenetOptimalPlannerSettings(object):
